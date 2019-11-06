@@ -1,0 +1,38 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>无标题文档</title>
+    <script src="jquery-1.9.1.min.js"></script>
+</head>
+<body>
+<button id="btn" onclick="request()">导出</button>
+<script>
+    function request () {
+        const req = new XMLHttpRequest();
+        req.open('POST', 'http://10.195.5.177:8082/ctm01detaindata/rest/hikvision/exportExcel/excel', true);
+        req.responseType = 'blob';
+        req.setRequestHeader('Content-Type', 'application/json');
+        req.onload = function() {
+            const data = req.response;
+            const a = document.createElement('a');
+            const blob = new Blob([data], {type: 'application/vnd.ms-excel'});
+            const blobUrl = window.URL.createObjectURL(blob);
+            download(blobUrl) ;
+        };
+        req.send('{\n' +
+            '    "ids":[1,2],\n' +
+            '    "dataType":"securityMeeting"\n' +
+            '}');
+    };
+    function download(blobUrl) {
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.download = '<文件名>';
+        a.href = blobUrl;
+        a.click();
+        document.body.removeChild(a);
+    }
+</script>
+</body>
+</html>
